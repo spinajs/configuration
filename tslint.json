@@ -14,6 +14,9 @@
     },
     "no-console": {
       "severity": "off"
+    },
+    "initialize-statics-after-imports": {
+      "severity": "off"
     }
   }
 }

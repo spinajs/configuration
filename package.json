@@ -55,6 +55,7 @@
     "prettier": "^1.18.2",
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
     "tslint-circular-dependencies": "^0.1.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-standard": "^8.0.1",

@@ -110,10 +110,6 @@ export class FrameworkConfiguration extends Configuration {
     return _.get(this.Config, path, defaultValue);
   }
 
-  protected dir(toJoin: string) {
-    return normalize(join(resolve(this.BaseDir), toJoin));
-  }
-
   public async initialize() {
     this.configureApp();
 
@@ -151,6 +147,12 @@ export class FrameworkConfiguration extends Configuration {
     }
   }
 
+  
+  protected dir(toJoin: string) {
+    return normalize(join(resolve(this.BaseDir), toJoin));
+  }
+
+  
   /**
    * adds app dirs to system.dirs config
    */
