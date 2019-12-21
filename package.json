@@ -1,6 +1,6 @@
 {
   "name": "@spinajs/configuration",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "framework configuration module",
   "main": "lib/index.js",
   "private": false,
