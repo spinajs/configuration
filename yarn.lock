@@ -89,20 +89,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@spinajs/configuration@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@spinajs/configuration/-/configuration-1.0.0.tgz#d02f8b62593067abd8c831edc77a81f132a9d183"
-  integrity sha512-LV+ifCp3ZB8gs7tiQqzfLC5Hegc+yZtwwPBzk7X+e07J6ZyCBjrT4FLHRcQcSoDVNTkhyei1R+YY+B5xQk/lpA==
-  dependencies:
-    "@spinajs/di" "^1.0.2"
-    commander "^2.20.0"
-    glob "^7.1.4"
-    lodash "^4.17.14"
-
-"@spinajs/di@^1.0.2", "@spinajs/di@^1.0.3":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@spinajs/di/-/di-1.0.5.tgz#904ebfdbcf38cf3e7ea36bd603a6a6c755ce091c"
-  integrity sha512-VdlrrOk2r1bguMKYrnfsZfc8KMNNcbiMMA58Q1yEE0OVoTzDMphW/PTAn2v+t+CVGxode0tKAN3jkcVmko9LSA==
+"@spinajs/di@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@spinajs/di/-/di-1.0.11.tgz#46b9e01ce926bb0e64cc71c42c9d7fdbd270a6e6"
+  integrity sha512-lbO0E94N7p4Bz/IjitxdcBD4nwqQisSyb5iNg0kVTvVcq7Co+SQ4JI8vJbRaK4uy1xulkBR1S1vRvIzTiQjqlw==
   dependencies:
     "@spinajs/exceptions" "^1.0.0"
     lodash "^4.17.14"
@@ -124,13 +114,6 @@
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/chai-as-promised/-/chai-as-promised-7.1.2.tgz#2f564420e81eaf8650169e5a3a6b93e096e5068b"
   integrity sha512-PO2gcfR3Oxa+u0QvECLe1xKXOqYTzCmWf0FhLhjREoW3fPAVamjihL7v1MOVLJLsnAMdLcjkfrs01yvDMwVK4Q==
-  dependencies:
-    "@types/chai" "*"
-
-"@types/chai-subset@^1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@types/chai-subset/-/chai-subset-1.3.3.tgz#97893814e92abd2c534de422cb377e0e0bdaac94"
-  integrity sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==
   dependencies:
     "@types/chai" "*"
 
@@ -320,11 +303,6 @@ chai-as-promised@^7.1.1:
   integrity sha512-azL6xMoi+uxu6z4rhWQ1jbdUhOMhis2PvscD/xjLqNMkv3BPPp2JyyuTHOrf9BOosGpNQ11v6BKv/g57RXbiaA==
   dependencies:
     check-error "^1.0.2"
-
-chai-subset@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/chai-subset/-/chai-subset-1.6.0.tgz#a5d0ca14e329a79596ed70058b6646bd6988cfe9"
-  integrity sha1-pdDKFOMpp5WW7XAFi2ZGvWmIz+k=
 
 chai@^4.2.0:
   version "4.2.0"
@@ -1633,7 +1611,7 @@ tslint-no-unused-expression-chai@^0.1.4:
   dependencies:
     tsutils "^3.0.0"
 
-tslint@^5.20.1, tslint@^5.5.0:
+tslint@^5.18.0, tslint@^5.5.0:
   version "5.20.1"
   resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.20.1.tgz#e401e8aeda0152bc44dd07e614034f3f80c67b7d"
   integrity sha512-EcMxhzCFt8k+/UP5r8waCf/lzmeSyVlqxqMEDQE7rWYiQky8KpIBz1JAoYXfROHrPZ1XXd43q8yQnULOLiBRQg==

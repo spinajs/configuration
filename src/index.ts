@@ -1,3 +1,4 @@
+import { Injectable } from '@spinajs/di';
 import * as commander from 'commander';
 import * as fs from 'fs';
 import * as glob from 'glob';
@@ -53,6 +54,7 @@ export abstract class Configuration {
   public abstract get<T>(path: string[] | string, defaultValue?: T): T;
 }
 
+@Injectable(Configuration)
 export class FrameworkConfiguration extends Configuration {
   /**
    * Default dirs to check for  configuration files

@@ -1,8 +1,11 @@
 {
   "extends": [
-    "tslint-circular-dependencies","tslint:recommended", "tslint-config-prettier","tslint-no-unused-expression-chai"
+    "tslint:recommended",
+    "tslint-config-prettier",
+    "tslint-no-unused-expression-chai",
+    "tslint-circular-dependencies"
   ],
-  "rules":{
+  "rules": {
     "max-classes-per-file": {
       "severity": "off"
     },
@@ -15,7 +18,10 @@
     "no-console": {
       "severity": "off"
     },
-    "initialize-statics-after-imports": {
+    "no-shadowed-variable": {
+      "severity": "off"
+    },
+    "ordered-imports": {
       "severity": "off"
     }
   }
