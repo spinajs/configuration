@@ -1,4 +1,4 @@
-import {  IContainer, Injectable, ResolveStrategy} from '@spinajs/di';
+import { IContainer, Injectable, ResolveStrategy } from '@spinajs/di';
 import * as commander from 'commander';
 import * as fs from 'fs';
 import * as glob from 'glob';
@@ -43,6 +43,14 @@ function merge(to: any, from: any): void {
 function uncache(file: string) {
   delete require.cache[file];
   return file;
+}
+
+function filterDirs(dir: string) {
+  if (fs.existsSync(dir)) {
+    log(`Found config dir at ${dir}`);
+    return true;
+  }
+  return false;
 }
 
 export abstract class Configuration extends ResolveStrategy {
@@ -112,12 +120,28 @@ export class FrameworkConfiguration extends Configuration {
     return _.get(this.Config, path, defaultValue);
   }
 
-  public async resolve(_container : IContainer) {
+  public async resolve(_container: IContainer) {
     this.configureApp();
 
-    this.CONFIG_DIRS.filter(_filterDirs)
+    this.load("js", (file: string) => {
+      uncache(file);
+      return require(file);
+    });
+
+    this.load("json", (file: string) => {
+      return JSON.parse(fs.readFileSync(file, 'utf-8'));
+    });
+
+    this.version();
+    this._appDirs();
+    this.configure();
+
+  }
+
+  protected load(extension: string, callback: (file: string) => any) {
+    this.CONFIG_DIRS.filter(filterDirs)
       // get all config files
-      .map(d => glob.sync(d + '/**/*.js'))
+      .map(d => glob.sync(d + `/**/*.${extension}`))
       // flatten files
       .reduce((prev, current) => {
         return prev.concat(_.flattenDeep(current));
@@ -129,32 +153,16 @@ export class FrameworkConfiguration extends Configuration {
         log(`Found file at: ${f}`);
         return f;
       })
-      // delete require cache
-      .map(uncache)
-      // load modules
-      .map(require)
+      .map(callback)
       // load & merge configs
       .map(_.curry(merge)(this.Config));
-
-    this.version();
-    this._appDirs();
-    this.configure();
-
-    function _filterDirs(dir: string) {
-      if (fs.existsSync(dir)) {
-        log(`Found config dir at ${dir}`);
-        return true;
-      }
-      return false;
-    }
   }
 
-  
   protected dir(toJoin: string) {
     return normalize(join(resolve(this.BaseDir), toJoin));
   }
 
-  
+
   /**
    * adds app dirs to system.dirs config
    */

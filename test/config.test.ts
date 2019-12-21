@@ -50,8 +50,10 @@ describe("Configuration tests", () => {
     it("Should load config files", async () => {
         const config = await cfg();
         const test = config.get(["test"]);
+        const json = config.get(["jsonentry"]);
 
         expect(test).to.not.be.undefined;
+        expect(json).to.be.true;
     });
 
     it("should return default value if no config property exists", async () => {
