@@ -4,51 +4,17 @@
         {
             "type": "node",
             "request": "launch",
-   
-            "name": "Run INDEX",
-			"program": "${workspaceRoot}/lib/index.js",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "args": [
-                "-a",
-                "test_app"
-            ],
-            "env": {
-                "NODE_ENV": "development"
-            },
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Run SPINA CLI",
-			"program": "${workspaceRoot}/lib/bin/spine.js",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "args": [
-                "orm:refresh",
-                "--connection",
-                "test"
-            ],
-            "env": {
-                "NODE_ENV": "development"
-            },
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Framework test",
+            "name": "CONFIGURATION test",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
-                "--inspect-brk",
-                "-u",
-                "tdd",
+                "-r",
+                "ts-node/register",
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/spine/test"
+                "${workspaceFolder}/test/**/*.ts",
             ],
-            "port": 9229,
-            "internalConsoleOptions": "openOnSessionStart"
-        }
+            "protocol": "inspector"
+        },
     ]
 }

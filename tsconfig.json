@@ -16,7 +16,7 @@
         "declaration": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "typeRoots": ["node_modules/@types", "src/typings"]
+        "typeRoots": ["node_modules/@types", "./typings"]
         
     },
     "include": [

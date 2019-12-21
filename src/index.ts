@@ -1,4 +1,4 @@
-import { Injectable } from '@spinajs/di';
+import {  IContainer, Injectable, ResolveStrategy} from '@spinajs/di';
 import * as commander from 'commander';
 import * as fs from 'fs';
 import * as glob from 'glob';
@@ -45,7 +45,7 @@ function uncache(file: string) {
   return file;
 }
 
-export abstract class Configuration {
+export abstract class Configuration extends ResolveStrategy {
   /**
    * Get config value for given property. Returns any if value is present, default value if provided or null when empty
    *
@@ -112,7 +112,7 @@ export class FrameworkConfiguration extends Configuration {
     return _.get(this.Config, path, defaultValue);
   }
 
-  public async initialize() {
+  public async resolve(_container : IContainer) {
     this.configureApp();
 
     this.CONFIG_DIRS.filter(_filterDirs)

@@ -23,6 +23,12 @@
     },
     "ordered-imports": {
       "severity": "off"
+    },
+    "variable-name":{
+      "severity": "off"
+    },
+    "object-literal-sort-keys":{
+      "severity": "off"
     }
   }
 }
