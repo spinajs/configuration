@@ -120,7 +120,7 @@ export class FrameworkConfiguration extends Configuration {
     return _.get(this.Config, path, defaultValue);
   }
 
-  public async resolve(_container: IContainer) {
+  public resolve(_container: IContainer) {
     this.configureApp();
 
     this.load("js", (file: string) => {
