@@ -103,7 +103,10 @@ export class FrameworkConfiguration extends Configuration {
     if (!app) {
       commander.option('-a, --app <appname>', 'Application name to run');
       commander.option('-p, --apppath <apppath>', 'Custom app path');
-      commander.parse(process.argv);
+
+      if (process.argv) {
+        commander.parse(process.argv);
+      }
     }
 
     this.RunApp = app || commander.app;
