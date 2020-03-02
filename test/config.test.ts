@@ -28,21 +28,21 @@ class TestConfiguration extends FrameworkConfiguration {
 
 describe("Configuration tests", () => {
 
-    beforeEach(() =>{
+    beforeEach(() => {
         DI.clear();
         DI.register(TestConfiguration).as(Configuration);
     });
-    
+
     it("Should load multiple nested files", async () => {
         const config = await cfgNoApp();
-        const test = config.get(["test","value2"]);
+        const test = config.get(["test", "value2"]);
         expect(test).to.be.eq(666);
     });
 
 
     it("Should load config files without app specified", async () => {
         const config = await cfgNoApp();
-        const test = config.get(["app","appLoaded"]);
+        const test = config.get(["app", "appLoaded"]);
         expect(test).to.be.undefined;
     });
 
@@ -101,4 +101,21 @@ describe("Configuration tests", () => {
         expect(test).to.be.undefined;
     });
 
+    it("should run with app from argv", async () => {
+
+        process.argv.push("--app");
+        process.argv.push("world");
+        const config = await cfg();
+
+        expect(config.RunApp).to.eq("world");
+    });
+
+    it("should run with app basepath from argv", async () => {
+
+        process.argv.push("--apppath");
+        process.argv.push("world");
+        const config = await cfg();
+
+        expect(config.RunApp).to.eq("world");
+    });
 });

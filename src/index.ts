@@ -1,5 +1,4 @@
 import { IContainer, Injectable, ResolveStrategy } from '@spinajs/di';
-import * as commander from 'commander';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as _ from 'lodash';
@@ -54,6 +53,18 @@ function filterDirs(dir: string) {
 }
 
 export abstract class Configuration extends ResolveStrategy {
+
+
+  /**
+   * Configuration base dir, where to look for app config
+   */
+  public BaseDir: string;
+
+  /**
+   * Current running app name
+   */
+  public RunApp: string;
+
   /**
    * Get config value for given property. Returns any if value is present, default value if provided or null when empty
    *
@@ -64,6 +75,17 @@ export abstract class Configuration extends ResolveStrategy {
 
 @Injectable(Configuration)
 export class FrameworkConfiguration extends Configuration {
+
+  /**
+   * Configuration base dir, where to look for app config
+   */
+  public BaseDir: string = './';
+
+  /**
+   * Current running app name
+   */
+  public RunApp: string = undefined;
+
   /**
    * Default dirs to check for  configuration files
    */
@@ -83,16 +105,6 @@ export class FrameworkConfiguration extends Configuration {
   protected Config: any = {};
 
   /**
-   * Configuration base dir, where to look for app config
-   */
-  protected BaseDir: string = './';
-
-  /**
-   * Current running app name
-   */
-  protected RunApp: string = undefined;
-
-  /**
    *
    * @param app application name, pass it when you run in application mode
    * @param baseDir configuration base dir, where to look for application configs
@@ -101,16 +113,27 @@ export class FrameworkConfiguration extends Configuration {
     super();
 
     if (!app) {
-      commander.option('-a, --app <appname>', 'Application name to run');
-      commander.option('-p, --apppath <apppath>', 'Custom app path');
 
-      if (process.argv) {
-        commander.parse(process.argv);
+      if (process.argv.length > 2) {
+        const appIndex = process.argv.indexOf("--app");
+        const appPath = process.argv.indexOf("-apppath");
+
+        if (appIndex !== -1) {
+          this.RunApp = process.argv[appIndex + 1];
+
+          log(`used app: ${this.RunApp}`);
+        }
+
+        if (appPath !== -1) {
+          this.BaseDir = process.argv[appPath + 1];
+
+          log(`user basedir: ${this.BaseDir}`);
+        }
       }
+    } else {
+      this.RunApp = app;
+      this.BaseDir = appBaseDir ?? join(__dirname, '../apps/');
     }
-
-    this.RunApp = app || commander.app;
-    this.BaseDir = commander.apppath ? commander.apppath : appBaseDir ? appBaseDir : join(__dirname, '../apps/');
   }
 
   /**
