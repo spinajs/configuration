@@ -112,27 +112,20 @@ export class FrameworkConfiguration extends Configuration {
   constructor(app?: string, appBaseDir?: string) {
     super();
 
-    if (!app) {
+    this.RunApp = app ?? parseArgv("--app");
+    this.BaseDir = appBaseDir ?? parseArgv("--appPath") ?? join(__dirname, '../apps/');
 
-      if (process.argv.length > 2) {
-        const appIndex = process.argv.indexOf("--app");
-        const appPath = process.argv.indexOf("-apppath");
+    log(`Running app: ${this.RunApp}`);
+    log(`Base dir at: ${this.BaseDir}`);
 
-        if (appIndex !== -1) {
-          this.RunApp = process.argv[appIndex + 1];
+    function parseArgv(param: string): string {
+      const index = process.argv.indexOf(param);
 
-          log(`used app: ${this.RunApp}`);
-        }
-
-        if (appPath !== -1) {
-          this.BaseDir = process.argv[appPath + 1];
-
-          log(`user basedir: ${this.BaseDir}`);
-        }
+      if (index === -1 || process.argv.length <= index + 1) {
+        return undefined;
       }
-    } else {
-      this.RunApp = app;
-      this.BaseDir = appBaseDir ?? join(__dirname, '../apps/');
+
+      return process.argv[index + 1];
     }
   }
 
