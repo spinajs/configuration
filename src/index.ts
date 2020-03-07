@@ -90,10 +90,18 @@ export class FrameworkConfiguration extends Configuration {
    * Default dirs to check for  configuration files
    */
   protected CONFIG_DIRS: string[] = [
-    // framework path
+    // this module path
     normalize(join(resolve(__dirname), '/../config')),
 
-    // project paths
+    // other @spinajs modules paths
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/orm/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/orm-sqlite/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/orm-sql/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/log/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/intl/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/cli/config')),
+
+    // project paths - last to allow overwrite @spinajs conf
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/dist/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/build/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/config')),
