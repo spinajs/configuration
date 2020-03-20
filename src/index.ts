@@ -1,4 +1,4 @@
-import { IContainer, Injectable, ResolveStrategy } from '@spinajs/di';
+import { IContainer, Injectable, SyncModule } from '@spinajs/di';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as _ from 'lodash';
@@ -52,7 +52,7 @@ function filterDirs(dir: string) {
   return false;
 }
 
-export abstract class Configuration extends ResolveStrategy {
+export abstract class Configuration extends SyncModule {
 
 
   /**
