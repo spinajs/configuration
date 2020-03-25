@@ -4,7 +4,6 @@ import * as glob from 'glob';
 import * as _ from 'lodash';
 import { join, normalize, resolve, sep } from 'path';
 
-
 /**
  * Hack to inform ts that jasmine var is declared to skip syntax error
  */
@@ -20,7 +19,7 @@ interface IFrameworkVersion {
 
 function log(message: string) {
   if (typeof jasmine === 'undefined') {
-    console.log('[ CONFIGURATION ] ' + message)
+    console.log('[ CONFIGURATION ] ' + message);
   }
 }
 
@@ -53,8 +52,6 @@ function filterDirs(dir: string) {
 }
 
 export abstract class Configuration extends SyncModule {
-
-
   /**
    * Configuration base dir, where to look for app config
    */
@@ -75,7 +72,6 @@ export abstract class Configuration extends SyncModule {
 
 @Injectable(Configuration)
 export class FrameworkConfiguration extends Configuration {
-
   /**
    * Configuration base dir, where to look for app config
    */
@@ -120,8 +116,8 @@ export class FrameworkConfiguration extends Configuration {
   constructor(app?: string, appBaseDir?: string) {
     super();
 
-    this.RunApp = app ?? parseArgv("--app");
-    this.BaseDir = appBaseDir ?? parseArgv("--appPath") ?? join(__dirname, '../apps/');
+    this.RunApp = app ?? parseArgv('--app');
+    this.BaseDir = appBaseDir ?? parseArgv('--appPath') ?? join(__dirname, '../apps/');
 
     log(`Running app: ${this.RunApp}`);
     log(`Base dir at: ${this.BaseDir}`);
@@ -150,19 +146,18 @@ export class FrameworkConfiguration extends Configuration {
   public resolve(_container: IContainer) {
     this.configureApp();
 
-    this.load("js", (file: string) => {
+    this.load('js', (file: string) => {
       uncache(file);
       return require(file);
     });
 
-    this.load("json", (file: string) => {
+    this.load('json', (file: string) => {
       return JSON.parse(fs.readFileSync(file, 'utf-8'));
     });
 
     this.version();
     this._appDirs();
     this.configure();
-
   }
 
   protected load(extension: string, callback: (file: string) => any) {
@@ -188,7 +183,6 @@ export class FrameworkConfiguration extends Configuration {
   protected dir(toJoin: string) {
     return normalize(join(resolve(this.BaseDir), toJoin));
   }
-
 
   /**
    * adds app dirs to system.dirs config
