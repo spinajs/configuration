@@ -96,6 +96,7 @@ export class FrameworkConfiguration extends Configuration {
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/log/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/intl/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/cli/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modulse/@spinajs/acl/config')),
 
     // project paths - last to allow overwrite @spinajs conf
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/dist/config')),
@@ -112,8 +113,9 @@ export class FrameworkConfiguration extends Configuration {
    *
    * @param app application name, pass it when you run in application mode
    * @param baseDir configuration base dir, where to look for application configs
+   * @param cfgCustomPaths custom cfg paths eg. to load config from non standard folders ( usefull in tests )
    */
-  constructor(app?: string, appBaseDir?: string) {
+  constructor(app?: string, appBaseDir?: string, cfgCustomPaths?: string[]) {
     super();
 
     this.RunApp = app ?? parseArgv('--app');
@@ -121,6 +123,10 @@ export class FrameworkConfiguration extends Configuration {
 
     log(`Running app: ${this.RunApp}`);
     log(`Base dir at: ${this.BaseDir}`);
+
+    if (cfgCustomPaths) {
+      this.CONFIG_DIRS = this.CONFIG_DIRS.concat(cfgCustomPaths);
+    }
 
     function parseArgv(param: string): string {
       const index = process.argv.indexOf(param);
