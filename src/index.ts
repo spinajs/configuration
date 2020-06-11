@@ -90,13 +90,13 @@ export class FrameworkConfiguration extends Configuration {
     normalize(join(resolve(__dirname), '/../config')),
 
     // other @spinajs modules paths
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm-sqlite/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm-sql/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/log/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/intl/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/cli/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm-sqlite/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm-sql/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/log/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/intl/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/cli/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl/lib/config')),
 
     // project paths - last to allow overwrite @spinajs conf
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/dist/config')),
