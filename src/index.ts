@@ -99,6 +99,7 @@ export class FrameworkConfiguration extends Configuration {
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl/lib/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/http/lib/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl-http/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/jobs/lib/config')),
 
 
 
