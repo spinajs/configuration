@@ -98,6 +98,8 @@ export class FrameworkConfiguration extends Configuration {
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/cli/lib/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl/lib/config')),
     normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/http/lib/config')),
+    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl-http/lib/config')),
+
 
 
     // project paths - last to allow overwrite @spinajs conf
