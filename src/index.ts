@@ -2,7 +2,7 @@ import { IContainer, Injectable, SyncModule } from '@spinajs/di';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import * as _ from 'lodash';
-import { join, normalize, resolve, sep } from 'path';
+import { join, normalize, resolve } from 'path';
 
 /**
  * Hack to inform ts that jasmine var is declared to skip syntax error
@@ -90,29 +90,33 @@ export class FrameworkConfiguration extends Configuration {
     normalize(join(resolve(__dirname), '/../config')),
 
     // other @spinajs modules paths
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm-sqlite/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/orm-sql/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/log/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/intl/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/cli/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/http/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/acl-http/lib/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/node_modules/@spinajs/jobs/lib/config')),
-
+    '/node_modules/@spinajs/orm/lib/config',
+    '/node_modules/@spinajs/orm-sqlite/lib/config',
+    '/node_modules/@spinajs/orm-sql/lib/config',
+    '/node_modules/@spinajs/log/lib/config',
+    '/node_modules/@spinajs/intl/lib/config',
+    '/node_modules/@spinajs/cli/lib/config',
+    '/node_modules/@spinajs/acl/lib/config',
+    '/node_modules/@spinajs/http/lib/config',
+    '/node_modules/@spinajs/acl-http/lib/config',
+    '/node_modules/@spinajs/jobs/lib/config',
+    '/node_modules/@spinajs/acl-session-provider-dynamodb/lib/config',
 
 
     // project paths - last to allow overwrite @spinajs conf
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/dist/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/build/config')),
-    normalize(join(resolve(__dirname).split(sep + 'node_modules')[0], '/config')),
+    '/lib/config',
+    '/dist/config',
+    '/build/config',
+    '/config',
+
   ];
 
   /**
    * Loaded & merged configuration
    */
   protected Config: any = {};
+
+  protected CustomConfigPaths: string[];
 
   /**
    *
@@ -123,15 +127,14 @@ export class FrameworkConfiguration extends Configuration {
   constructor(app?: string, appBaseDir?: string, cfgCustomPaths?: string[]) {
     super();
 
+    this.CustomConfigPaths = cfgCustomPaths ?? [];
     this.RunApp = app ?? parseArgv('--app');
     this.BaseDir = appBaseDir ?? parseArgv('--appPath') ?? join(__dirname, '../apps/');
 
     log(`Running app: ${this.RunApp}`);
     log(`Base dir at: ${this.BaseDir}`);
 
-    if (cfgCustomPaths) {
-      this.CONFIG_DIRS = this.CONFIG_DIRS.concat(cfgCustomPaths);
-    }
+
 
     function parseArgv(param: string): string {
       const index = process.argv.indexOf(param);
@@ -155,6 +158,7 @@ export class FrameworkConfiguration extends Configuration {
   }
 
   public resolve(_container: IContainer) {
+
     this.configureApp();
 
     this.load('js', (file: string) => {
@@ -172,7 +176,11 @@ export class FrameworkConfiguration extends Configuration {
   }
 
   protected load(extension: string, callback: (file: string) => any) {
-    this.CONFIG_DIRS.filter(filterDirs)
+
+    const basePath = findBasePath(process.cwd());
+  
+    this.CONFIG_DIRS.map(f => join(basePath, f))
+      .concat(this.CustomConfigPaths).filter(filterDirs)
       // get all config files
       .map(d => glob.sync(d + `/**/*.${extension}`))
       // flatten files
@@ -189,7 +197,16 @@ export class FrameworkConfiguration extends Configuration {
       .map(callback)
       // load & merge configs
       .map(_.curry(merge)(this.Config));
+
+    function findBasePath(path: string): string {
+      if (fs.existsSync(join(path, "node_modules"))) {
+        return path;
+      }
+
+      return findBasePath(resolve(path, ".."));
+    }
   }
+
 
   protected dir(toJoin: string) {
     return normalize(join(resolve(this.BaseDir), toJoin));
