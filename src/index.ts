@@ -102,13 +102,11 @@ export class FrameworkConfiguration extends Configuration {
     '/node_modules/@spinajs/jobs/lib/config',
     '/node_modules/@spinajs/acl-session-provider-dynamodb/lib/config',
 
-
     // project paths - last to allow overwrite @spinajs conf
     '/lib/config',
     '/dist/config',
     '/build/config',
     '/config',
-
   ];
 
   /**
@@ -134,8 +132,6 @@ export class FrameworkConfiguration extends Configuration {
     log(`Running app: ${this.RunApp}`);
     log(`Base dir at: ${this.BaseDir}`);
 
-
-
     function parseArgv(param: string): string {
       const index = process.argv.indexOf(param);
 
@@ -158,7 +154,6 @@ export class FrameworkConfiguration extends Configuration {
   }
 
   public resolve(_container: IContainer) {
-
     this.configureApp();
 
     this.load('js', (file: string) => {
@@ -176,11 +171,11 @@ export class FrameworkConfiguration extends Configuration {
   }
 
   protected load(extension: string, callback: (file: string) => any) {
-
     const basePath = findBasePath(process.cwd());
-  
+
     this.CONFIG_DIRS.map(f => join(basePath, f))
-      .concat(this.CustomConfigPaths).filter(filterDirs)
+      .concat(this.CustomConfigPaths)
+      .filter(filterDirs)
       // get all config files
       .map(d => glob.sync(d + `/**/*.${extension}`))
       // flatten files
@@ -199,14 +194,13 @@ export class FrameworkConfiguration extends Configuration {
       .map(_.curry(merge)(this.Config));
 
     function findBasePath(path: string): string {
-      if (fs.existsSync(join(path, "node_modules"))) {
+      if (fs.existsSync(join(path, 'node_modules'))) {
         return path;
       }
 
-      return findBasePath(resolve(path, ".."));
+      return findBasePath(resolve(path, '..'));
     }
   }
-
 
   protected dir(toJoin: string) {
     return normalize(join(resolve(this.BaseDir), toJoin));
