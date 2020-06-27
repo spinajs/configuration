@@ -171,7 +171,7 @@ export class FrameworkConfiguration extends Configuration {
   }
 
   protected load(extension: string, callback: (file: string) => any) {
-    const basePath = findBasePath(process.cwd());
+    const basePath = this.RunApp ? this.BaseDir : findBasePath(process.cwd());
 
     this.CONFIG_DIRS.map(f => join(basePath, f))
       .concat(this.CustomConfigPaths)
@@ -252,7 +252,7 @@ export class FrameworkConfiguration extends Configuration {
   protected configureApp() {
     if (typeof this.RunApp === 'string') {
       log(`Application to run: ${this.RunApp}`);
-      this.CONFIG_DIRS.push(this.dir(`/${this.RunApp}/config`));
+      this.CONFIG_DIRS.push(`./${this.RunApp}/config`);
     }
   }
 }
