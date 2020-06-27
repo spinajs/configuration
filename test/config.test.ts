@@ -1,7 +1,7 @@
 import 'mocha';
 
 import { expect } from 'chai';
-import { join, normalize, resolve } from 'path';
+import { join, normalize } from 'path';
 
 import { DI } from '@spinajs/di';
 import { Configuration, FrameworkConfiguration } from '../src/';
@@ -16,13 +16,13 @@ function cfgApp() {
 
 
 function cfgNoApp() {
-    return DI.resolve<Configuration>(Configuration);
+    return DI.resolve<Configuration>(Configuration,[null,null, normalize(join(__dirname, "/mocks/config"))]);
 }
 
 class TestConfiguration extends FrameworkConfiguration {
     protected CONFIG_DIRS: string[] = [
         // project path
-        normalize(join(resolve(__dirname), "/mocks/config")),
+        "./config",
     ];
 }
 
@@ -48,7 +48,7 @@ describe("Configuration tests", () => {
 
 
     it("Should load config files", async () => {
-        const config = await cfg();
+        const config = await cfgNoApp();
         const test = config.get(["test"]);
         const json = config.get(["jsonentry"]);
 
@@ -58,28 +58,28 @@ describe("Configuration tests", () => {
 
     it("should return default value if no config property exists", async () => {
 
-        const config = await cfg();
+        const config = await cfgNoApp();
         const test = config.get(["test", "value3"], 111);
 
         expect(test).to.be.eq(111);
     });
 
     it("should merge two config files", async () => {
-        const config = await cfg();
+        const config = await cfgNoApp();
         const test = config.get("test.array");
 
         expect(test).to.include.members([1, 2, 3, 4]);
     });
 
     it("should run configuration function", async () => {
-        const config = await cfg();
+        const config = await cfgNoApp();
         const test = config.get("test.confFunc");
 
         expect(test).to.eq(true);
     });
 
     it("should get with dot notation", async () => {
-        const config = await cfg();
+        const config = await cfgNoApp();
         const test = config.get("test.value");
 
         expect(test).to.eq(1);
@@ -95,7 +95,7 @@ describe("Configuration tests", () => {
 
     it("should return undefined when no value", async () => {
 
-        const config = await cfg();
+        const config = await cfgNoApp();
         const test = config.get("app.undefinedValue");
 
         expect(test).to.be.undefined;
