@@ -101,6 +101,8 @@ export class FrameworkConfiguration extends Configuration {
     '/node_modules/@spinajs/acl-http/lib/config',
     '/node_modules/@spinajs/jobs/lib/config',
     '/node_modules/@spinajs/acl-session-provider-dynamodb/lib/config',
+    '/node_modules/@spinajs/acl-session-provider-sqldb/lib/config',
+
 
     // project paths - last to allow overwrite @spinajs conf
     '/lib/config',
@@ -172,7 +174,6 @@ export class FrameworkConfiguration extends Configuration {
 
   protected load(extension: string, callback: (file: string) => any) {
     const basePath = this.RunApp ? this.BaseDir : findBasePath(process.cwd());
-
     this.CONFIG_DIRS.map(f => join(basePath, f))
       .concat(this.CustomConfigPaths)
       .filter(filterDirs)
