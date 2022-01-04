@@ -52,7 +52,7 @@ export abstract class BaseFileSource extends ConfigurationSource {
         this.CONFIG_DIRS.map(f => join(basePath, f))
             .filter(filterDirs)
             // get all config files
-            .map(d => glob.sync(d + `/**/*.${extension}`))
+            .map(d => glob.sync(d + `/**/${extension}`))
             // flatten files
             .reduce((prev, current) => {
                 return prev.concat(_.flattenDeep(current));
@@ -77,13 +77,19 @@ export class JsFileSource extends BaseFileSource {
     protected CONFIG_DIRS: string[] = DEFAULT_CONFIG_DIRS;
 
     public async Load(): Promise<any> {
-        return this.load('js', (file: string) => {
+        const common = this.load('!(*.dev|*.prod).js', _load);
 
-            log(`Found file at: ${file}`);
+        if (process.env.NODE_ENV === "development") {
+            return _.merge(common, this.load("*.dev.js", _load));
+        } else {
+            return _.merge(common, this.load("*.prod.js", _load));
+        }
 
+        function _load(file: string) {
+            log(`Found configuration file at: ${file}`);
             uncache(file);
             return require(file);
-        });
+        }
     }
 
 }
@@ -98,16 +104,22 @@ export class JsonFileSource extends BaseFileSource {
     protected CONFIG_DIRS: string[] = DEFAULT_CONFIG_DIRS;
 
     public async Load(): Promise<any> {
-        return this.load('json', (file: string) => {
+        const common = this.load('!(*.dev|*.prod).json', _load);
 
+        if (process.env.NODE_ENV === "development") {
+            return _.merge(common, this.load("*.dev.json", _load));
+        } else {
+            return _.merge(common, this.load("*.prod.json", _load));
+        }
+
+        function _load(file: string) {
             try {
+                log(`Found configuration file at: ${file}`);
                 return JSON.parse(fs.readFileSync(file, "utf-8"));
             } catch (err) {
                 log(`Config ${file} invalid ! Error: ${err.message}`)
                 return null;
             }
-
-        });
+        }
     }
-
 }
