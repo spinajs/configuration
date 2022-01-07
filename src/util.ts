@@ -54,7 +54,6 @@ export function uncache(file: string) {
 
 export function filterDirs(dir: string) {
     if (fs.existsSync(dir)) {
-        log(`Found config dir at ${dir}`);
         return true;
     }
     return false;

@@ -1,6 +1,5 @@
 import { Injectable } from "@spinajs/di";
 import glob = require("glob");
-import { merge } from "lodash";
 import _ = require("lodash");
 import { join, normalize, resolve } from 'path';
 import { filterDirs, findBasePath, log, uncache } from "./util";
@@ -36,20 +35,26 @@ export abstract class BaseFileSource extends ConfigurationSource {
     */
     protected CONFIG_DIRS: string[] = [];
 
-    constructor(protected RunApp: string) {
+    constructor(protected RunApp?: string, protected CustomConfigPaths?: string[]) {
         super();
-
-        if (typeof this.RunApp === 'string') {
-            this.CONFIG_DIRS.push(`./${this.RunApp}/config`);
-        }
     }
 
     protected load(extension: string, callback: (file: string) => any) {
 
         let config = {};
+        let dirs = this.CONFIG_DIRS;
         const basePath = this.RunApp ? this.BaseDir : findBasePath(process.cwd());
+        
 
-        this.CONFIG_DIRS.map(f => join(basePath, f))
+        if (this.RunApp) {
+            dirs = dirs.concat([`./${this.RunApp}/config`]);
+        }
+
+        if (this.CustomConfigPaths) {
+            dirs = dirs.concat(this.CustomConfigPaths);
+        }
+ 
+        dirs.map(f => join(basePath, f))
             .filter(filterDirs)
             // get all config files
             .map(d => glob.sync(d + `/**/${extension}`))
@@ -62,13 +67,13 @@ export abstract class BaseFileSource extends ConfigurationSource {
             .map(callback)
             .filter((v) => v !== null)
             // load & merge configs
-            .map(_.curry(merge)(config));
+            .map(c => _.merge(config, c));
 
         return config;
     }
 }
 
-@Injectable()
+@Injectable(ConfigurationSource)
 export class JsFileSource extends BaseFileSource {
 
     /**
@@ -95,7 +100,7 @@ export class JsFileSource extends BaseFileSource {
 }
 
 
-@Injectable()
+@Injectable(ConfigurationSource)
 export class JsonFileSource extends BaseFileSource {
 
     /**

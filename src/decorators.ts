@@ -17,7 +17,6 @@ export function Config(path: string, dafaultValue?: any) {
             if (!config) {
                 config = DI.get(Configuration);
             }
-
             return config.get(path, dafaultValue);
         }
 

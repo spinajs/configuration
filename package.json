@@ -9,6 +9,7 @@
     "coverage": "nyc npm run test",
     "build-docs": "rimraf docs && typedoc --options typedoc.json src/",
     "build": "tsc",
+    "build-watch": "tsc -w",
     "prepare": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
@@ -42,7 +43,6 @@
     "lodash": "^4.17.14"
   },
   "devDependencies": {
-    "@types/bunyan": "^1.8.6",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/lodash": "^4.14.136",
