@@ -56,13 +56,14 @@ export class FrameworkConfiguration extends Configuration {
 
     this.Sources = await container.resolve(Array.ofType(ConfigurationSource), [this.RunApp,this.CustomConfigPaths]);
 
-
     await Promise.all(this.Sources.map(s => s.Load())).then(result => {
       result.map(c => _.merge(this.Config, c));
     });
 
     this.applyAppDirs();
     this.configure();
+
+    await this.resolveAsync(container);
   }
 
 
