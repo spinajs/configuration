@@ -104,22 +104,23 @@ describe("Configuration tests", () => {
         expect(test).to.be.undefined;
     });
 
-    it("should run with app from argv", async () => {
+    it("should merge app config with app from argv", async () => {
+
+        const dir = normalize(join(__dirname, "/mocks/apps"));
 
         process.argv.push("--app");
-        process.argv.push("world");
-        const config = await cfg();
-
-        expect(config.RunApp).to.eq("world");
-    });
-
-    it("should run with app basepath from argv", async () => {
+        process.argv.push("testapp");
 
         process.argv.push("--apppath");
-        process.argv.push("world");
+        process.argv.push(dir);
         const config = await cfg();
 
-        expect(config.RunApp).to.eq("world");
+        const test = config.get("app");
+        expect(test).to.not.be.undefined;
+
+        expect(config.RunApp).to.eq("testapp");
+        expect(config.AppBaseDir).to.eq(dir);
+ 
     });
 
     it("Should load production only config", async () =>{ 

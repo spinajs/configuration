@@ -2,14 +2,14 @@ import { IContainer, Injectable } from '@spinajs/di';
 import { InvalidOperation } from '@spinajs/exceptions';
 import { join, normalize, resolve } from 'path';
 import { ConfigurationSource } from './sources';
-import { Configuration } from './types';
+import { Configuration, ConfigurationOptions } from './types';
 import { parseArgv } from './util';
 import * as _ from "lodash";
 
 @Injectable(Configuration)
 export class FrameworkConfiguration extends Configuration {
   /**
-   * Configuration base dir, where to look for app config
+   * Apps configuration base dir, where to look for app config
    */
   public AppBaseDir: string = './';
 
@@ -33,13 +33,12 @@ export class FrameworkConfiguration extends Configuration {
    * @param baseDir configuration base dir, where to look for application configs
    * @param cfgCustomPaths custom cfg paths eg. to load config from non standard folders ( usefull in tests )
    */
-  constructor(app?: string, appBaseDir?: string, cfgCustomPaths?: string[]) {
+  constructor(options?: ConfigurationOptions) {
     super();
 
-    this.CustomConfigPaths = cfgCustomPaths ?? [];
-    this.RunApp = app ?? parseArgv('--app');
-    this.AppBaseDir = appBaseDir ?? parseArgv('--appPath') ?? join(__dirname, '../apps/');
-
+    this.CustomConfigPaths = options?.cfgCustomPaths ?? [];
+    this.RunApp = options?.app ?? parseArgv('--app');
+    this.AppBaseDir = options?.appBaseDir ?? parseArgv('--apppath') ?? join(__dirname, '../apps/');
   }
 
   /**
@@ -67,7 +66,7 @@ export class FrameworkConfiguration extends Configuration {
 
     this.applyAppDirs();
     this.configure();
-    
+
 
     await super.resolveAsync(container);
   }
@@ -100,7 +99,7 @@ export class FrameworkConfiguration extends Configuration {
       const subconfig = this.Config[prop];
 
       if (_.isFunction(subconfig.configure)) {
-        subconfig.configure.call(subconfig);
+        subconfig.configure.apply(this.Config, subconfig);
       }
     }
   }
