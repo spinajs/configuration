@@ -4,10 +4,21 @@ import _ = require("lodash");
 import { join, normalize, resolve } from 'path';
 import { filterDirs, findBasePath, log, uncache } from "./util";
 import * as fs from 'fs';
+import * as path from 'path';
+
+function mergeArrays(target: any, source: any) {
+    if (_.isArray(target)) {
+        return target.concat(source);
+    }
+}
 
 const DEFAULT_CONFIG_DIRS = [
     // this module path
     normalize(join(resolve(__dirname), '/../config')),
+    
+    // for tests, in src dir
+    normalize(join(resolve(__dirname), '/config')),
+
 
     // other @spinajs modules paths
     '/node_modules/@spinajs/*/lib/config',
@@ -35,7 +46,7 @@ export abstract class BaseFileSource extends ConfigurationSource {
     */
     protected CONFIG_DIRS: string[] = [];
 
-    constructor(protected RunApp?: string, protected CustomConfigPaths?: string[]) {
+    constructor(protected RunApp?: string, protected CustomConfigPaths?: string[], protected appBaseDir?: string) {
         super();
     }
 
@@ -43,18 +54,18 @@ export abstract class BaseFileSource extends ConfigurationSource {
 
         let config = {};
         let dirs = this.CONFIG_DIRS;
-        const basePath = this.RunApp ? this.BaseDir : findBasePath(process.cwd());
-        
+        const basePath = findBasePath(process.cwd());
+
 
         if (this.RunApp) {
-            dirs = dirs.concat([`./${this.RunApp}/config`]);
+            dirs = dirs.concat([join(this.appBaseDir, `/${this.RunApp}/config`)]);
         }
 
         if (this.CustomConfigPaths) {
             dirs = dirs.concat(this.CustomConfigPaths);
         }
- 
-        dirs.map(f => join(basePath, f))
+
+        dirs.map(f => path.isAbsolute(f) ? f : join(basePath, f))
             .filter(filterDirs)
             // get all config files
             .map(d => glob.sync(d + `/**/${extension}`))
@@ -67,7 +78,7 @@ export abstract class BaseFileSource extends ConfigurationSource {
             .map(callback)
             .filter((v) => v !== null)
             // load & merge configs
-            .map(c => _.merge(config, c));
+            .map(c => _.mergeWith(config, c, mergeArrays));
 
         return config;
     }
@@ -84,11 +95,15 @@ export class JsFileSource extends BaseFileSource {
     public async Load(): Promise<any> {
         const common = this.load('!(*.dev|*.prod).js', _load);
 
-        if (process.env.NODE_ENV === "development") {
-            return _.merge(common, this.load("*.dev.js", _load));
-        } else {
-            return _.merge(common, this.load("*.prod.js", _load));
+        if (process.env.NODE_ENV) {
+            if (process.env.NODE_ENV === "development") {
+                return _.mergeWith(common, this.load("*.dev.js", _load), mergeArrays);
+            } else if (process.env.NODE_ENV === "production") {
+                return _.mergeWith(common, this.load("*.prod.js", _load), mergeArrays);
+            }
         }
+
+        return common;
 
         function _load(file: string) {
             log(`Found configuration file at: ${file}`);
@@ -111,12 +126,16 @@ export class JsonFileSource extends BaseFileSource {
     public async Load(): Promise<any> {
         const common = this.load('!(*.dev|*.prod).json', _load);
 
-        if (process.env.NODE_ENV === "development") {
-            return _.merge(common, this.load("*.dev.json", _load));
-        } else {
-            return _.merge(common, this.load("*.prod.json", _load));
+        if (process.env.NODE_ENV) {
+            if (process.env.NODE_ENV === "development") {
+                return _.merge(common, this.load("*.dev.json", _load));
+            } else if (process.env.NODE_ENV === "production") {
+                return _.merge(common, this.load("*.prod.json", _load));
+            }
         }
 
+        return common;
+        
         function _load(file: string) {
             try {
                 log(`Found configuration file at: ${file}`);

@@ -1,4 +1,5 @@
 import { IContainer, Injectable } from '@spinajs/di';
+import { InvalidOperation } from '@spinajs/exceptions';
 import { join, normalize, resolve } from 'path';
 import { ConfigurationSource } from './sources';
 import { Configuration } from './types';
@@ -10,7 +11,7 @@ export class FrameworkConfiguration extends Configuration {
   /**
    * Configuration base dir, where to look for app config
    */
-  public BaseDir: string = './';
+  public AppBaseDir: string = './';
 
   /**
    * Current running app name
@@ -37,7 +38,7 @@ export class FrameworkConfiguration extends Configuration {
 
     this.CustomConfigPaths = cfgCustomPaths ?? [];
     this.RunApp = app ?? parseArgv('--app');
-    this.BaseDir = appBaseDir ?? parseArgv('--appPath') ?? join(__dirname, '../apps/');
+    this.AppBaseDir = appBaseDir ?? parseArgv('--appPath') ?? join(__dirname, '../apps/');
 
   }
 
@@ -54,7 +55,11 @@ export class FrameworkConfiguration extends Configuration {
 
   public async resolveAsync(container: IContainer): Promise<void> {
 
-    this.Sources = await container.resolve(Array.ofType(ConfigurationSource), [this.RunApp,this.CustomConfigPaths]);
+    if (!container.hasRegistered(ConfigurationSource)) {
+      throw new InvalidOperation("No configuration sources configured. Please ensure that config module have any source to read from !");
+    }
+
+    this.Sources = await container.resolve(Array.ofType(ConfigurationSource), [this.RunApp, this.CustomConfigPaths, this.AppBaseDir]);
 
     await Promise.all(this.Sources.map(s => s.Load())).then(result => {
       result.map(c => _.merge(this.Config, c));
@@ -62,8 +67,9 @@ export class FrameworkConfiguration extends Configuration {
 
     this.applyAppDirs();
     this.configure();
+    
 
-    await this.resolveAsync(container);
+    await super.resolveAsync(container);
   }
 
 

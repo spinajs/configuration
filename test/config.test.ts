@@ -28,9 +28,12 @@ class TestConfiguration extends FrameworkConfiguration {
 
 describe("Configuration tests", () => {
 
-    beforeEach(() => {
-        DI.clear();
+    before(() =>{ 
         DI.register(TestConfiguration).as(Configuration);
+    });
+
+    beforeEach(() => {
+        DI.clearCache();
     });
 
     it("Should load multiple nested files", async () => {
@@ -118,4 +121,36 @@ describe("Configuration tests", () => {
 
         expect(config.RunApp).to.eq("world");
     });
+
+    it("Should load production only config", async () =>{ 
+        process.env.NODE_ENV = "production";
+
+        const config = await cfgNoApp();
+         
+        expect(config.get("test.production")).to.eq(true);
+        expect(config.get("test.development")).to.eq(undefined);
+
+        expect(config.get("json-prod")).to.eq(true);
+        expect(config.get("json-dev")).to.eq(undefined);
+
+        expect(config.get("configuration.isDevelopment")).to.eq(false);
+        expect(config.get("configuration.isProduction")).to.eq(true);
+    });
+
+    it("Should load development only config", async () =>{ 
+        process.env.NODE_ENV = "development";
+
+        const config = await cfgNoApp();
+         
+        expect(config.get("test.production")).to.eq(undefined);
+        expect(config.get("test.development")).to.eq(true);
+
+        expect(config.get("json-prod")).to.eq(undefined);
+        expect(config.get("json-dev")).to.eq(true);
+
+        expect(config.get("configuration.isDevelopment")).to.eq(true);
+        expect(config.get("configuration.isProduction")).to.eq(false);
+
+
+    })
 });
