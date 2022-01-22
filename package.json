@@ -1,6 +1,6 @@
 {
   "name": "@spinajs/configuration",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "framework configuration module",
   "main": "lib/index.js",
   "private": false,
@@ -40,6 +40,7 @@
   "dependencies": {
     "@spinajs/di": "^1.0.19",
     "@spinajs/exceptions": "^1.0.4",
+    "@spinajs/log": "^1.0.10",
     "glob": "^7.1.4",
     "lodash": "^4.17.14"
   },

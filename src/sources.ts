@@ -2,9 +2,11 @@ import { Injectable } from "@spinajs/di";
 import glob = require("glob");
 import _ = require("lodash");
 import { join, normalize, resolve } from 'path';
-import { filterDirs, findBasePath, log, uncache } from "./util";
+import { filterDirs, findBasePath, uncache } from "./util";
 import * as fs from 'fs';
 import * as path from 'path';
+import { Log } from "@spinajs/log";
+
 
 function mergeArrays(target: any, source: any) {
     if (_.isArray(target)) {
@@ -15,7 +17,7 @@ function mergeArrays(target: any, source: any) {
 const DEFAULT_CONFIG_DIRS = [
     // this module path
     normalize(join(resolve(__dirname), '/../config')),
-    
+
     // for tests, in src dir
     normalize(join(resolve(__dirname), '/config')),
 
@@ -106,7 +108,9 @@ export class JsFileSource extends BaseFileSource {
         return common;
 
         function _load(file: string) {
-            log(`Found configuration file at: ${file}`);
+
+            Log.trace(`Found configuration file at ${file}`, "Configuration");
+
             uncache(file);
             return require(file);
         }
@@ -135,13 +139,14 @@ export class JsonFileSource extends BaseFileSource {
         }
 
         return common;
-        
+
         function _load(file: string) {
+
             try {
-                log(`Found configuration file at: ${file}`);
+                Log.trace(`Found configuration file at ${file}`, "Configuration");
                 return JSON.parse(fs.readFileSync(file, "utf-8"));
             } catch (err) {
-                log(`Config ${file} invalid ! Error: ${err.message}`)
+                Log.error(err, `Config ${file} invalid !`, "Configuration");
                 return null;
             }
         }

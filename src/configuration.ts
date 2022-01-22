@@ -3,6 +3,7 @@ import { InvalidOperation } from '@spinajs/exceptions';
 import { join, normalize, resolve } from 'path';
 import { ConfigurationSource } from './sources';
 import { Configuration, ConfigurationOptions } from './types';
+import { Log } from "@spinajs/log";
 import { parseArgv } from './util';
 import * as _ from "lodash";
 
@@ -59,6 +60,8 @@ export class FrameworkConfiguration extends Configuration {
     }
 
     this.Sources = await container.resolve(Array.ofType(ConfigurationSource), [this.RunApp, this.CustomConfigPaths, this.AppBaseDir]);
+
+    Log.trace(`Found ${this.Sources.map(x => x.constructor.name)} log sources`, "Configuration");
 
     await Promise.all(this.Sources.map(s => s.Load())).then(result => {
       result.map(c => _.merge(this.Config, c));

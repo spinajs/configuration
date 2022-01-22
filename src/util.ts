@@ -23,13 +23,7 @@ export function findBasePath(path: string): string {
     }
 
     return findBasePath(resolve(path, '..'));
-}
-
-export function log(message: string) {
-    if (typeof jasmine === 'undefined') {
-        console.log('[ CONFIGURATION ] ' + message);
-    }
-}
+} 
 
 export function merge(to: any, from: any): void {
     _.mergeWith(to, from, (src, dest) => {
